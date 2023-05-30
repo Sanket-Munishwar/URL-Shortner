@@ -6,10 +6,8 @@ const authmid=require('../middlewares/authmid')
 
 const router = express.Router();
 
-
-
-router.post('/authors',mid.reqBodyCheck,mid.validEmail,mid.uniqueEmail,authorCtrl.createAuthor);//aditya 
-router.post('/blogs',mid.reqBodyCheck, mid.validAuthor,authmid.authenticationMid, blogCtrl.createBlog);//Aditya 
+router.post('/authors',mid.reqBodyCheck,mid.missingFieldAuthor,mid.validEmail,mid.uniqueEmail,authorCtrl.createAuthor);//aditya 
+router.post('/blogs',mid.reqBodyCheck,mid.missingFieldBlog, authmid.authenticationMid,mid.validAuthor, blogCtrl.createBlog);//Aditya 
 router.get('/blogs' ,authmid.authenticationMid,blogCtrl.getBlogData);//pallavi 
 //
 router.put("/blogs/:blogId",mid.reqBodyCheck, mid.validBlogId,authmid.authenticationMid,authmid.authorizationMid, blogCtrl.updatedBlog);//preeti

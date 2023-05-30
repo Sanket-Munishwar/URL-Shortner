@@ -18,16 +18,15 @@ const blogSchema = new mongoose.Schema(
       ref: "authorData",
     },
     tags: {
-      type: [{ type: String, trim: true }],
-     
+      type: [{ type: String, trim: true }]
     },
     category: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
     },
     subcategory: {
-      type: [{ type: String, trim: true }],
+      type: [{ type: String, trim: true }]
      
     },
     deletedAt: {

@@ -50,56 +50,6 @@ const reqBodyCheck = async function (req, res, next) {
     }
 }
 
-// const validAuthor = async function (req, res, next) {
-//   try {
-//       let authId = req.body.authorId;
-//       if(authId){
-//       if(authId.length!=24){
-//           return res.status(400).send({status:false,msg:"provide valid author ID"})
-//       };
-//       let validAuthor = await authorModel.findById({ _id: authId });
-//       if (!validAuthor) {
-//           return res.status(404).send({ staus: false, msg: "Author does not exist" })
-//       }
-//       next();
-//     }else{
-//       const data = req.body;
-//       let authId = req.decodedToken.authorId;
-//       data["authorId"]=authId;
-//       const blog = await blogModel.create(data);
-//     return  res.status(201).send({ status: true, data: blog });
-//     }
-//   }
-//   catch (error) {
-//       return res.status(500).send({ status: false, msg: error.message })
-//   }
-// }
-
-// const validAuthor = async function (req, res, next) {
-//   try {
-//     let authId = req.body.authorId;
-//     if (authId) {
-//       if (authId.length !== 24) {
-//         return res.status(400).send({ status: false, msg: "Provide a valid author ID" });
-//       }
-//       let validAuthor = await authorModel.findById({ _id: authId });
-//       if (!validAuthor) {
-//         return res.status(404).send({ status: false, msg: "Author does not exist" });
-//       }
-//       next();
-//     } else {
-//       const data = req.body;
-//       let authId = req.decodedToken.authorId;
-//       if (authId) {
-//         data.authorId = authId;
-//       }
-//       const blog = await blogModel.create(data);
-//       return res.status(201).send({ status: true, data: blog });
-//     }
-//   } catch (error) {
-//     return res.status(500).send({ status: false, msg: error.message });
-//   }
-// }
 const validAuthor = async function (req, res, next) {
   try {
     let authId = req.body.authorId;

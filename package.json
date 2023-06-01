@@ -4,16 +4,12 @@
   "description": "\"blog site project\"",
   "main": "index.js",
   "scripts": {
-    "start" : "nodemon src/index.js",
+    "start": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Pallavi-s-r/BlogSite-Project.git"
-  },
-  "engines":{
-    "npm":">=8.0.0<9.0.0",
-    "node":">=16.0.0<17.0.0"
   },
   "author": "",
   "license": "ISC",
@@ -28,6 +24,8 @@
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.4",
     "mongoose": "^7.2.1",
-    "nodemon": "^2.0.22"
+    "nanoid": "^4.0.2",
+    "nodemon": "^2.0.22",
+    "valid-url": "^1.0.9"
   }
 }

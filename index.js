@@ -11,7 +11,7 @@ app.use(express.json())
 mongoose.connect('mongodb+srv://sanketmunishwar7:q5WEY4lK4vMAzwbJ@cluster0.0jenlvx.mongodb.net/Sanket-urlShorter?retryWrites=true&w=majority',{
     useNewUrlParser: true
 })
-.then(()=> console.log("DB connected"))
+.then(()=> console.log("MongoDB connected"))
 .catch((err)=>console.log(err))
 
 app.use('/',route)

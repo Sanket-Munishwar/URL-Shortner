@@ -21,7 +21,7 @@ const redisClient = redis.createClient(
 
 
 
-  const SET_ASYNC = promisify(redisClient.SET).bind(redisClient);
+  const SET_ASYNC = promisify(redisClient.SETEX).bind(redisClient);
   const GET_ASYNC = promisify(redisClient.GET).bind(redisClient);
 
 
@@ -36,9 +36,9 @@ const createShortUrl = async function (req, res) {
         if (!longUrl || longUrl == "") {
             return res.status(400).send({ status: false, msg: "Long Url is required and Long Url cannot be empty" })
         }
-        // if(Object.keys(data).length !== 1){
-        //     return res.status(400).send({status:false,message:"Enter only long URL"})
-        // }
+        if(Object.keys(data).length !== 1){
+            return res.status(400).send({status:false,message:"Enter only long URL"})
+        }
         if (typeof longUrl != "string") {
             return res.status(400).send({ status: false, msg: "Long Url's type should be string only" })
         }
@@ -47,7 +47,7 @@ const createShortUrl = async function (req, res) {
         }
         let checkUrl = await axios.get(longUrl) //this will work only on Public URL not private URL
             .then(() => longUrl)
-            .catch(() => "invalid url")
+            .catch(() => null )
 
         if (!checkUrl) {
             return res.status(400).send({ status: false, message: "Please enter a valid URL." });
@@ -75,7 +75,7 @@ const createShortUrl = async function (req, res) {
         const createUrlData = await urlModel.create(data);
 
         //===setting the data in the redis during creation of data===
-        await SET_ASYNC(`${data.urlCode}`,JSON.stringify(createUrlData)); 
+        await SET_ASYNC(`${data.urlCode}`,2400,JSON.stringify(createUrlData)); 
 
         const finalResult = await urlModel.findById(createUrlData._id).select({ longUrl: 1, shortUrl: 1, urlCode: 1, _id: 0 });
         res.status(201).send({ status: true, data: finalResult });

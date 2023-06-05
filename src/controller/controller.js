@@ -11,6 +11,7 @@ const createShortUrl = async function (req, res) {
         let data = req.body
         let longUrl = data.longUrl
         //======long URL validation=====
+
         if (!longUrl || longUrl == "") {
             res.status(400).send({ status: false, msg: "Long Url is required and Long Url cannot be empty" })
         }
@@ -21,13 +22,13 @@ const createShortUrl = async function (req, res) {
             return res.status(400).send({ status: false, message: "Please Enter a valid URL." });
         }
 
-        
-        
-        
-        
+
+
+
+
         //=====check data present in redis cache or not=====//
         let cacheUrl = await GET_ASYNC(longUrl);
-       
+
         if (cacheUrl) {
             const { shortUrl } = JSON.parse(cacheUrl);
             return res.status(200).send({ status: true, message: 'Already available', shortUrl });
@@ -41,7 +42,7 @@ const createShortUrl = async function (req, res) {
         }
 
         //====if long url is unique then generate URL code and short URL=====
-        const isValidUrl = axios.get(longUrl).then().catch(err => {return res.status(404).json({ status: false, message:"Please, Provide Valid URL"})});
+        const isValidUrl = axios.get(longUrl).then().catch(err => { return res.status(404).json({ status: false, message: "Please, Provide Valid URL" }) });
         let uniqueUrlCode = shortId.generate();
         let urlCode = uniqueUrlCode;
         data.urlCode = uniqueUrlCode;
@@ -62,7 +63,7 @@ const getURL = async function (req, res) {
     try {
         let { urlCode } = req.params;
         let cachedUrl = await GET_ASYNC(urlCode);
-       
+
         if (cachedUrl) {
             const { longUrl } = JSON.parse(cachedUrl);
             return res.redirect(longUrl);
@@ -73,7 +74,7 @@ const getURL = async function (req, res) {
 
         if (!getData) {
             return res.status(400).send({ status: false, msg: "invalid urlcode" });
-      
+
         }
         await SET_ASYNC(getData.urlCode, JSON.stringify({ longUrl: getData.longUrl }), 'EX', 24 * 60 * 60);
         res.status(303).redirect(getData.longUrl);

@@ -36,19 +36,32 @@ const createShortUrl = async function (req, res) {
         if (!longUrl || longUrl == "") {
             return res.status(400).send({ status: false, msg: "Long Url is required and Long Url cannot be empty" })
         }
-        if(Object.keys(data).length !== 1){
-            return res.status(400).send({status:false,message:"Enter only long URL"})
-        }
+        // if(Object.keys(data).length !== 1){
+        //     return res.status(400).send({status:false,message:"Enter only long URL"})
+        // }
         if (typeof longUrl != "string") {
             return res.status(400).send({ status: false, msg: "Long Url's type should be string only" })
         }
         if (!checkValidUrl.isWebUri(longUrl.trim())) {
             return res.status(400).send({ status: false, message: "Please Enter a valid URL." });
         }
+        let checkUrl = await axios.get(longUrl) //this will work only on Public URL not private URL
+            .then(() => longUrl)
+            .catch(() => "invalid url")
+
+        if (!checkUrl) {
+            return res.status(400).send({ status: false, message: "Please enter a valid URL." });
+        }
+        let longUrlData = await GET_ASYNC(longUrl);
+        let cachedUrl = JSON.parse(longUrlData);
+        if (cachedUrl) {
+            return res.status(200).send({ status: true, msg: "Data Fetching From Cache", data: cachedUrl });
+        }
 
         //=====check if long URL exists and show its details======
         const findUrlDetails = await urlModel.findOne({ longUrl: longUrl }).select({ longUrl: 1, shortUrl: 1, urlCode: 1, _id: 0 });
         if (findUrlDetails) {
+            
             return res.status(403).send({ status: true, message: "URL code for this URL is already generated",data: findUrlDetails});
         }
 

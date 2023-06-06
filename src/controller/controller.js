@@ -61,7 +61,7 @@ const createShortUrl = async function (req, res) {
         //=====check if long URL exists and show its details======
         const findUrlDetails = await urlModel.findOne({ longUrl: longUrl }).select({ longUrl: 1, shortUrl: 1, urlCode: 1, _id: 0 });
         if (findUrlDetails) {
-            
+            await SET_ASYNC(longUrl, 86400, JSON.stringify(findUrlDetails));
             return res.status(403).send({ status: true, message: "URL code for this URL is already generated",data: findUrlDetails});
         }
 
@@ -75,9 +75,10 @@ const createShortUrl = async function (req, res) {
         const createUrlData = await urlModel.create(data);
 
         //===setting the data in the redis during creation of data===
-        await SET_ASYNC(`${data.urlCode}`,2400,JSON.stringify(createUrlData)); 
+        
 
         const finalResult = await urlModel.findById(createUrlData._id).select({ longUrl: 1, shortUrl: 1, urlCode: 1, _id: 0 });
+        await SET_ASYNC(longUrl, 86400, JSON.stringify(finalResult));
         res.status(201).send({ status: true, data: finalResult });
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message });

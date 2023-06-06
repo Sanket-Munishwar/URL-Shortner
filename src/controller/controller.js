@@ -103,7 +103,7 @@ const getURL = async function (req, res) {
             if(!getData){
                 return res.status(404).send({status:false,message:"Invalid URL code"})
             }
-            await SET_ASYNC(`${urlCode}`,JSON.stringify(getData));
+            await SET_ASYNC(`${urlCode}`,8400,JSON.stringify(getData));
             res.status(302).redirect(getData.longUrl)
         }
         

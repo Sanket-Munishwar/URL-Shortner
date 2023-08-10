@@ -55,14 +55,14 @@ const createShortUrl = async function (req, res) {
         let longUrlData = await GET_ASYNC(longUrl);
         let cachedUrl = JSON.parse(longUrlData);
         if (cachedUrl) {
-            return res.status(200).send({ status: true, msg: "Data Fetching From Cache", data: cachedUrl });
+            return res.status(200).send({ status: true, data: cachedUrl });
         }
 
         //=====check if long URL exists and show its details======
         const findUrlDetails = await urlModel.findOne({ longUrl: longUrl }).select({ longUrl: 1, shortUrl: 1, urlCode: 1, _id: 0 });
         if (findUrlDetails) {
             await SET_ASYNC(longUrl, 86400, JSON.stringify(findUrlDetails));
-            return res.status(403).send({ status: true, message: "URL code for this URL is already generated",data: findUrlDetails});
+            return res.status(403).send({ status: true, message: "URL code for this URL is already generated"});
         }
 
         //====if long url is unique then generate URL code and short URL=====
@@ -89,26 +89,25 @@ const getURL = async function (req, res) {
     try {
         const urlCode = req.params.urlCode;
 
-        redisClient.expire(urlCode,86400)
-        let cachedData = await GET_ASYNC(`${req.params.urlCode}`);
+        // redisClient.expire(urlCode,86400)
+        let cachedData = await GET_ASYNC(`${urlCode}`);
+        console.log(cachedData)
 
-        if(cachedData){
-            // JSONObject jsonObject = new JSONObject(cachedData)
-            var obj = JSON.parse(cachedData)
-            // console.log(obj)
+        if (cachedData) {
+            console.log("coming from cache")
 
-            return res.status(302).redirect(obj.longUrl)
+            return res.status(302).redirect(cachedData)
         }
-        else{
-            let getData = await urlModel.findOne({urlCode:urlCode})
-            if(!getData){
-                return res.status(404).send({status:false,message:"Invalid URL code"})
-            }
-            await SET_ASYNC(`${urlCode}`,8400,JSON.stringify(getData));
-            res.status(302).redirect(getData.longUrl)
+
+        let getData = await urlModel.findOne({ urlCode: urlCode })
+        if (!getData) {
+            return res.status(404).send({ status: false, message: "Invalid URL code" })
         }
-        
-    
+        // await SET_ASYNC(`${urlCode}`,86400,JSON.stringify(getData));
+        console.log("coming from DB")
+        res.status(302).redirect(getData.longUrl)
+
+
     } catch (error) {
         res.status(500).send({ status: false, msg: error.message });
     }
